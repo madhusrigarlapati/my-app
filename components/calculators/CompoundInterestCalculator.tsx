@@ -21,7 +21,7 @@ const FREQUENCIES = [
 ];
 
 export default function CompoundInterestCalculator() {
-  const [params, update] = useShareableParams({
+  const [params, update] = useShareableParams("compound-interest", {
     principal: "10000",
     rate: "6",
     years: "10",

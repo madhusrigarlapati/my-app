@@ -18,7 +18,7 @@ function bmiCategory(bmi: number) {
 }
 
 export default function BmiCalculator() {
-  const [params, update] = useShareableParams({
+  const [params, update] = useShareableParams("bmi", {
     unit: "metric",
     heightCm: "170",
     weightKg: "70",

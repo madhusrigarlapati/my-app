@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ExplanationPanel from "@/components/ExplanationPanel";
+import RelatedCalculators from "@/components/RelatedCalculators";
 import type { Explanation } from "@/lib/calculators";
 
 export default function CalculatorShell({
@@ -8,6 +9,7 @@ export default function CalculatorShell({
   title,
   description,
   explanation,
+  related,
   children,
 }: {
   domainName: string;
@@ -15,6 +17,7 @@ export default function CalculatorShell({
   title: string;
   description: string;
   explanation: Explanation;
+  related?: [string, string][];
   children: React.ReactNode;
 }) {
   return (
@@ -35,6 +38,7 @@ export default function CalculatorShell({
       </div>
       {children}
       <ExplanationPanel explanation={explanation} />
+      <RelatedCalculators related={related} />
     </div>
   );
 }

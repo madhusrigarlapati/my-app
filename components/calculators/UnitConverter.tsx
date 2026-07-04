@@ -67,7 +67,7 @@ function formatNumber(n: number) {
 }
 
 export default function UnitConverter() {
-  const [params, update] = useShareableParams({
+  const [params, update] = useShareableParams("unit-converter", {
     category: "length",
     value: "1",
     fromUnit: "meter",

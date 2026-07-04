@@ -13,7 +13,7 @@ function formatNumber(n: number) {
 }
 
 export default function PercentageCalculator() {
-  const [params, update] = useShareableParams({
+  const [params, update] = useShareableParams("percentage", {
     percent: "15",
     ofValue: "200",
     partValue: "30",

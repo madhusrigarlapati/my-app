@@ -19,6 +19,7 @@ export default function AgePage() {
       title={calculator!.name}
       description={calculator!.description}
       explanation={calculator!.explanation}
+      related={calculator!.related}
     >
       <AgeCalculator />
     </CalculatorShell>

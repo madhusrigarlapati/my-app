@@ -14,7 +14,7 @@ const currency = new Intl.NumberFormat("en-US", {
 });
 
 export default function TipCalculator() {
-  const [params, update] = useShareableParams({
+  const [params, update] = useShareableParams("tip", {
     bill: "50",
     tipPercent: "18",
     people: "2",

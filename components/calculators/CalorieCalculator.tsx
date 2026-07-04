@@ -18,7 +18,7 @@ const ACTIVITY_LEVELS = [
 ];
 
 export default function CalorieCalculator() {
-  const [params, update] = useShareableParams({
+  const [params, update] = useShareableParams("calorie", {
     gender: "male",
     age: "30",
     heightCm: "175",

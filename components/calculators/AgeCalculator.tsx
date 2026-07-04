@@ -27,7 +27,7 @@ function diffYmd(start: Date, end: Date) {
 }
 
 export default function AgeCalculator() {
-  const [params, update] = useShareableParams({
+  const [params, update] = useShareableParams("age", {
     startDate: "2000-01-01",
     endDate: todayIso(),
   });

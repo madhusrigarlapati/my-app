@@ -19,6 +19,7 @@ export default function CompoundInterestPage() {
       title={calculator!.name}
       description={calculator!.description}
       explanation={calculator!.explanation}
+      related={calculator!.related}
     >
       <CompoundInterestCalculator />
     </CalculatorShell>

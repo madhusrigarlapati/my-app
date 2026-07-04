@@ -14,7 +14,7 @@ const currency = new Intl.NumberFormat("en-US", {
 });
 
 export default function EmiCalculator() {
-  const [params, update] = useShareableParams({
+  const [params, update] = useShareableParams("emi", {
     principal: "250000",
     rate: "7.5",
     years: "20",

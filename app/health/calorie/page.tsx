@@ -19,6 +19,7 @@ export default function CaloriePage() {
       title={calculator!.name}
       description={calculator!.description}
       explanation={calculator!.explanation}
+      related={calculator!.related}
     >
       <CalorieCalculator />
     </CalculatorShell>
