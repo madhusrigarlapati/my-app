@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ExplanationPanel from "@/components/ExplanationPanel";
 import RelatedCalculators from "@/components/RelatedCalculators";
+import { buildFaqSchema } from "@/lib/structuredData";
 import type { Explanation } from "@/lib/calculators";
 
 export default function CalculatorShell({
@@ -22,6 +23,12 @@ export default function CalculatorShell({
 }) {
   return (
     <div className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-6 px-4 py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(buildFaqSchema(title, explanation)),
+        }}
+      />
       <div className="flex flex-col gap-1">
         <Link
           href={`/#${domainSlug}`}

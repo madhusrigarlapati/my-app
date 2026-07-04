@@ -1,9 +1,14 @@
 import Link from "next/link";
 import { domains } from "@/lib/calculators";
+import { buildWebApplicationSchema } from "@/lib/structuredData";
 
 export default function HomePage() {
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-10 px-4 py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildWebApplicationSchema()) }}
+      />
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">
           Calc Suite
