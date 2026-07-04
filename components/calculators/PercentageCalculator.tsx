@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Field from "@/components/ui/Field";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
+import { validateNumber } from "@/lib/validation";
 
 function formatNumber(n: number) {
   if (!Number.isFinite(n)) return "—";
@@ -43,8 +44,19 @@ export default function PercentageCalculator() {
           What is X% of Y?
         </h2>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Percent" value={percent} onChange={setPercent} unit="%" />
-          <Field label="Of value" value={ofValue} onChange={setOfValue} />
+          <Field
+            label="Percent"
+            value={percent}
+            onChange={setPercent}
+            unit="%"
+            error={validateNumber(percent)}
+          />
+          <Field
+            label="Of value"
+            value={ofValue}
+            onChange={setOfValue}
+            error={validateNumber(ofValue)}
+          />
         </div>
         <ResultsPanel>
           <ResultRow label="Result" value={formatNumber(percentOf)} emphasize />
@@ -56,8 +68,18 @@ export default function PercentageCalculator() {
           X is what percent of Y?
         </h2>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Part" value={partValue} onChange={setPartValue} />
-          <Field label="Whole" value={wholeValue} onChange={setWholeValue} />
+          <Field
+            label="Part"
+            value={partValue}
+            onChange={setPartValue}
+            error={validateNumber(partValue)}
+          />
+          <Field
+            label="Whole"
+            value={wholeValue}
+            onChange={setWholeValue}
+            error={validateNumber(wholeValue)}
+          />
         </div>
         <ResultsPanel>
           <ResultRow
@@ -73,8 +95,18 @@ export default function PercentageCalculator() {
           Percentage change from X to Y
         </h2>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="From" value={fromValue} onChange={setFromValue} />
-          <Field label="To" value={toValue} onChange={setToValue} />
+          <Field
+            label="From"
+            value={fromValue}
+            onChange={setFromValue}
+            error={validateNumber(fromValue)}
+          />
+          <Field
+            label="To"
+            value={toValue}
+            onChange={setToValue}
+            error={validateNumber(toValue)}
+          />
         </div>
         <ResultsPanel>
           <ResultRow

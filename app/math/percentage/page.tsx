@@ -17,6 +17,7 @@ export default function PercentagePage() {
       domainSlug={domain!.slug}
       title={calculator!.name}
       description={calculator!.description}
+      explanation={calculator!.explanation}
     >
       <PercentageCalculator />
     </CalculatorShell>

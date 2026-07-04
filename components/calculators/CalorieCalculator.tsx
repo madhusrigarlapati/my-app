@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Field from "@/components/ui/Field";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
+import { validateNumber } from "@/lib/validation";
 
 type Gender = "male" | "female";
 
@@ -39,7 +40,8 @@ export default function CalorieCalculator() {
             key={option}
             type="button"
             onClick={() => setGender(option)}
-            className={`rounded-full px-3 py-1.5 text-sm font-medium capitalize transition-colors ${
+            aria-pressed={gender === option}
+            className={`rounded-full px-3 py-1.5 text-sm font-medium capitalize transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 dark:focus-visible:ring-neutral-100 ${
               gender === option
                 ? "bg-neutral-900 text-neutral-50 dark:bg-neutral-100 dark:text-neutral-900"
                 : "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400"
@@ -51,9 +53,30 @@ export default function CalorieCalculator() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <Field label="Age" value={age} onChange={setAge} unit="years" min={0} />
-        <Field label="Height" value={heightCm} onChange={setHeightCm} unit="cm" min={0} />
-        <Field label="Weight" value={weightKg} onChange={setWeightKg} unit="kg" min={0} />
+        <Field
+          label="Age"
+          value={age}
+          onChange={setAge}
+          unit="years"
+          min={0}
+          error={validateNumber(age, { min: 0 })}
+        />
+        <Field
+          label="Height"
+          value={heightCm}
+          onChange={setHeightCm}
+          unit="cm"
+          min={0}
+          error={validateNumber(heightCm, { min: 0 })}
+        />
+        <Field
+          label="Weight"
+          value={weightKg}
+          onChange={setWeightKg}
+          unit="kg"
+          min={0}
+          error={validateNumber(weightKg, { min: 0 })}
+        />
         <label className="flex flex-col gap-1.5 text-sm">
           <span className="font-medium text-neutral-700 dark:text-neutral-300">
             Activity level
@@ -61,7 +84,7 @@ export default function CalorieCalculator() {
           <select
             value={activityFactor}
             onChange={(e) => setActivityFactor(Number(e.target.value))}
-            className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-base text-neutral-900 outline-none focus:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:border-neutral-100"
+            className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-base text-neutral-900 outline-none focus:border-neutral-900 focus-visible:ring-2 focus-visible:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:border-neutral-100 dark:focus-visible:ring-neutral-100"
           >
             {ACTIVITY_LEVELS.map((level) => (
               <option key={level.label} value={level.factor}>

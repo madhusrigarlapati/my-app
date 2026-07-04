@@ -17,6 +17,7 @@ export default function CaloriePage() {
       domainSlug={domain!.slug}
       title={calculator!.name}
       description={calculator!.description}
+      explanation={calculator!.explanation}
     >
       <CalorieCalculator />
     </CalculatorShell>

@@ -17,6 +17,7 @@ export default function EmiPage() {
       domainSlug={domain!.slug}
       title={calculator!.name}
       description={calculator!.description}
+      explanation={calculator!.explanation}
     >
       <EmiCalculator />
     </CalculatorShell>

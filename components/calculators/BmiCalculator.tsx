@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Field from "@/components/ui/Field";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
+import { validateNumber } from "@/lib/validation";
 
 type UnitSystem = "metric" | "imperial";
 
@@ -42,7 +43,8 @@ export default function BmiCalculator() {
             key={option}
             type="button"
             onClick={() => setUnit(option)}
-            className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+            aria-pressed={unit === option}
+            className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 dark:focus-visible:ring-neutral-100 ${
               unit === option
                 ? "bg-neutral-900 text-neutral-50 dark:bg-neutral-100 dark:text-neutral-900"
                 : "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400"
@@ -56,13 +58,41 @@ export default function BmiCalculator() {
       <div className="flex flex-col gap-4">
         {unit === "metric" ? (
           <>
-            <Field label="Height" value={heightCm} onChange={setHeightCm} unit="cm" min={0} />
-            <Field label="Weight" value={weightKg} onChange={setWeightKg} unit="kg" min={0} />
+            <Field
+              label="Height"
+              value={heightCm}
+              onChange={setHeightCm}
+              unit="cm"
+              min={0}
+              error={validateNumber(heightCm, { min: 0 })}
+            />
+            <Field
+              label="Weight"
+              value={weightKg}
+              onChange={setWeightKg}
+              unit="kg"
+              min={0}
+              error={validateNumber(weightKg, { min: 0 })}
+            />
           </>
         ) : (
           <>
-            <Field label="Height" value={heightIn} onChange={setHeightIn} unit="in" min={0} />
-            <Field label="Weight" value={weightLb} onChange={setWeightLb} unit="lb" min={0} />
+            <Field
+              label="Height"
+              value={heightIn}
+              onChange={setHeightIn}
+              unit="in"
+              min={0}
+              error={validateNumber(heightIn, { min: 0 })}
+            />
+            <Field
+              label="Weight"
+              value={weightLb}
+              onChange={setWeightLb}
+              unit="lb"
+              min={0}
+              error={validateNumber(weightLb, { min: 0 })}
+            />
           </>
         )}
       </div>

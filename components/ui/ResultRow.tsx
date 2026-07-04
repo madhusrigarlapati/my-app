@@ -1,6 +1,10 @@
 export function ResultsPanel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
+    <div
+      role="status"
+      aria-live="polite"
+      className="flex flex-col gap-3 rounded-xl border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50"
+    >
       {children}
     </div>
   );

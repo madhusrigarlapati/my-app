@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Field from "@/components/ui/Field";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
+import { validateNumber } from "@/lib/validation";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -41,6 +42,10 @@ export default function EmiCalculator() {
     };
   }, [principal, rate, years]);
 
+  const principalError = validateNumber(principal, { min: 0 });
+  const rateError = validateNumber(rate, { min: 0 });
+  const yearsError = validateNumber(years, { min: 0 });
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4">
@@ -50,6 +55,7 @@ export default function EmiCalculator() {
           onChange={setPrincipal}
           unit="$"
           min={0}
+          error={principalError}
         />
         <Field
           label="Annual interest rate"
@@ -58,6 +64,7 @@ export default function EmiCalculator() {
           unit="%"
           step={0.01}
           min={0}
+          error={rateError}
         />
         <Field
           label="Loan tenure"
@@ -65,6 +72,7 @@ export default function EmiCalculator() {
           onChange={setYears}
           unit="years"
           min={0}
+          error={yearsError}
         />
       </div>
       <ResultsPanel>

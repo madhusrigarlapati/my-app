@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Field from "@/components/ui/Field";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
+import { validateNumber } from "@/lib/validation";
 
 type Category = "length" | "weight" | "temperature";
 
@@ -93,7 +94,8 @@ export default function UnitConverter() {
             key={option}
             type="button"
             onClick={() => handleCategoryChange(option)}
-            className={`rounded-full px-3 py-1.5 text-sm font-medium capitalize transition-colors ${
+            aria-pressed={category === option}
+            className={`rounded-full px-3 py-1.5 text-sm font-medium capitalize transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 dark:focus-visible:ring-neutral-100 ${
               category === option
                 ? "bg-neutral-900 text-neutral-50 dark:bg-neutral-100 dark:text-neutral-900"
                 : "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400"
@@ -105,7 +107,12 @@ export default function UnitConverter() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <Field label="Value" value={value} onChange={setValue} />
+        <Field
+          label="Value"
+          value={value}
+          onChange={setValue}
+          error={validateNumber(value)}
+        />
         <div className="grid grid-cols-2 gap-3">
           <label className="flex flex-col gap-1.5 text-sm">
             <span className="font-medium text-neutral-700 dark:text-neutral-300">

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Field from "@/components/ui/Field";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
+import { validateNumber } from "@/lib/validation";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -33,6 +34,10 @@ export default function CompoundInterestCalculator() {
     return { futureValue: fv, totalInterest: fv - p };
   }, [principal, rate, years, frequency]);
 
+  const principalError = validateNumber(principal, { min: 0 });
+  const rateError = validateNumber(rate, { min: 0 });
+  const yearsError = validateNumber(years, { min: 0 });
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4">
@@ -42,6 +47,7 @@ export default function CompoundInterestCalculator() {
           onChange={setPrincipal}
           unit="$"
           min={0}
+          error={principalError}
         />
         <Field
           label="Annual interest rate"
@@ -50,8 +56,16 @@ export default function CompoundInterestCalculator() {
           unit="%"
           step={0.01}
           min={0}
+          error={rateError}
         />
-        <Field label="Time" value={years} onChange={setYears} unit="years" min={0} />
+        <Field
+          label="Time"
+          value={years}
+          onChange={setYears}
+          unit="years"
+          min={0}
+          error={yearsError}
+        />
         <label className="flex flex-col gap-1.5 text-sm">
           <span className="font-medium text-neutral-700 dark:text-neutral-300">
             Compounding frequency
@@ -59,7 +73,7 @@ export default function CompoundInterestCalculator() {
           <select
             value={frequency}
             onChange={(e) => setFrequency(Number(e.target.value))}
-            className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-base text-neutral-900 outline-none focus:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:border-neutral-100"
+            className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-base text-neutral-900 outline-none focus:border-neutral-900 focus-visible:ring-2 focus-visible:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:border-neutral-100 dark:focus-visible:ring-neutral-100"
           >
             {FREQUENCIES.map((f) => (
               <option key={f.value} value={f.value}>

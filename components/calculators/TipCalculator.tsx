@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Field from "@/components/ui/Field";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
+import { validateNumber } from "@/lib/validation";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -30,19 +31,28 @@ export default function TipCalculator() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4">
-        <Field label="Bill amount" value={bill} onChange={setBill} unit="$" min={0} />
+        <Field
+          label="Bill amount"
+          value={bill}
+          onChange={setBill}
+          unit="$"
+          min={0}
+          error={validateNumber(bill, { min: 0 })}
+        />
         <Field
           label="Tip percentage"
           value={tipPercent}
           onChange={setTipPercent}
           unit="%"
           min={0}
+          error={validateNumber(tipPercent, { min: 0 })}
         />
         <Field
           label="Number of people"
           value={people}
           onChange={setPeople}
           min={1}
+          error={validateNumber(people, { min: 1 })}
         />
       </div>
       <ResultsPanel>

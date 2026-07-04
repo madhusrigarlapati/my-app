@@ -1,16 +1,20 @@
 import Link from "next/link";
+import ExplanationPanel from "@/components/ExplanationPanel";
+import type { Explanation } from "@/lib/calculators";
 
 export default function CalculatorShell({
   domainName,
   domainSlug,
   title,
   description,
+  explanation,
   children,
 }: {
   domainName: string;
   domainSlug: string;
   title: string;
   description: string;
+  explanation: Explanation;
   children: React.ReactNode;
 }) {
   return (
@@ -30,6 +34,7 @@ export default function CalculatorShell({
         </p>
       </div>
       {children}
+      <ExplanationPanel explanation={explanation} />
     </div>
   );
 }
