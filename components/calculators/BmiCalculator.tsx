@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Field from "@/components/ui/Field";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
+import ShareLinkButton from "@/components/ShareLinkButton";
 import { validateNumber } from "@/lib/validation";
+import { useShareableParams } from "@/lib/useShareableParams";
 
 type UnitSystem = "metric" | "imperial";
 
@@ -16,11 +18,15 @@ function bmiCategory(bmi: number) {
 }
 
 export default function BmiCalculator() {
-  const [unit, setUnit] = useState<UnitSystem>("metric");
-  const [heightCm, setHeightCm] = useState("170");
-  const [weightKg, setWeightKg] = useState("70");
-  const [heightIn, setHeightIn] = useState("67");
-  const [weightLb, setWeightLb] = useState("154");
+  const [params, update] = useShareableParams({
+    unit: "metric",
+    heightCm: "170",
+    weightKg: "70",
+    heightIn: "67",
+    weightLb: "154",
+  });
+  const unit = params.unit as UnitSystem;
+  const { heightCm, weightKg, heightIn, weightLb } = params;
 
   const bmi = useMemo(() => {
     if (unit === "metric") {
@@ -42,7 +48,7 @@ export default function BmiCalculator() {
           <button
             key={option}
             type="button"
-            onClick={() => setUnit(option)}
+            onClick={() => update({ unit: option })}
             aria-pressed={unit === option}
             className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 dark:focus-visible:ring-neutral-100 ${
               unit === option
@@ -61,7 +67,7 @@ export default function BmiCalculator() {
             <Field
               label="Height"
               value={heightCm}
-              onChange={setHeightCm}
+              onChange={(v) => update({ heightCm: v })}
               unit="cm"
               min={0}
               error={validateNumber(heightCm, { min: 0 })}
@@ -69,7 +75,7 @@ export default function BmiCalculator() {
             <Field
               label="Weight"
               value={weightKg}
-              onChange={setWeightKg}
+              onChange={(v) => update({ weightKg: v })}
               unit="kg"
               min={0}
               error={validateNumber(weightKg, { min: 0 })}
@@ -80,7 +86,7 @@ export default function BmiCalculator() {
             <Field
               label="Height"
               value={heightIn}
-              onChange={setHeightIn}
+              onChange={(v) => update({ heightIn: v })}
               unit="in"
               min={0}
               error={validateNumber(heightIn, { min: 0 })}
@@ -88,7 +94,7 @@ export default function BmiCalculator() {
             <Field
               label="Weight"
               value={weightLb}
-              onChange={setWeightLb}
+              onChange={(v) => update({ weightLb: v })}
               unit="lb"
               min={0}
               error={validateNumber(weightLb, { min: 0 })}
@@ -101,6 +107,7 @@ export default function BmiCalculator() {
         <ResultRow label="BMI" value={bmi > 0 ? bmi.toFixed(1) : "—"} emphasize />
         <ResultRow label="Category" value={bmiCategory(bmi)} />
       </ResultsPanel>
+      <ShareLinkButton params={params} />
     </div>
   );
 }

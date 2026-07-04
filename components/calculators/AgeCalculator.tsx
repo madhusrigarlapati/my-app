@@ -1,7 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
+import ShareLinkButton from "@/components/ShareLinkButton";
+import { useShareableParams } from "@/lib/useShareableParams";
 
 function todayIso() {
   return new Date().toISOString().slice(0, 10);
@@ -25,8 +27,11 @@ function diffYmd(start: Date, end: Date) {
 }
 
 export default function AgeCalculator() {
-  const [startDate, setStartDate] = useState("2000-01-01");
-  const [endDate, setEndDate] = useState(todayIso());
+  const [params, update] = useShareableParams({
+    startDate: "2000-01-01",
+    endDate: todayIso(),
+  });
+  const { startDate, endDate } = params;
 
   const result = useMemo(() => {
     const start = new Date(startDate);
@@ -54,8 +59,8 @@ export default function AgeCalculator() {
           <input
             type="date"
             value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-base text-neutral-900 outline-none focus:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:border-neutral-100"
+            onChange={(e) => update({ startDate: e.target.value })}
+            className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-base text-neutral-900 outline-none focus:border-neutral-900 focus-visible:ring-2 focus-visible:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:border-neutral-100 dark:focus-visible:ring-neutral-100"
           />
         </label>
         <label className="flex flex-col gap-1.5 text-sm">
@@ -65,8 +70,8 @@ export default function AgeCalculator() {
           <input
             type="date"
             value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-base text-neutral-900 outline-none focus:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:border-neutral-100"
+            onChange={(e) => update({ endDate: e.target.value })}
+            className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-base text-neutral-900 outline-none focus:border-neutral-900 focus-visible:ring-2 focus-visible:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:border-neutral-100 dark:focus-visible:ring-neutral-100"
           />
         </label>
       </div>
@@ -85,6 +90,7 @@ export default function AgeCalculator() {
           <ResultRow label="Difference" value="Enter valid dates" />
         )}
       </ResultsPanel>
+      <ShareLinkButton params={params} />
     </div>
   );
 }

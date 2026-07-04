@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 import CalculatorShell from "@/components/CalculatorShell";
 import BmiCalculator from "@/components/calculators/BmiCalculator";
 import { findCalculator } from "@/lib/calculators";
 
 const { domain, calculator } = findCalculator("health", "bmi");
 
-export const metadata: Metadata = {
-  title: calculator?.name,
-  description: calculator?.description,
-};
+export const metadata = buildMetadata({
+  title: calculator!.name,
+  description: calculator!.description,
+  path: "/health/bmi",
+});
 
 export default function BmiPage() {
   return (

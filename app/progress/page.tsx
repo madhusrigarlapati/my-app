@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Build Progress",
   description: "Live progress on the Calc Suite feature roadmap.",
+  robots: { index: false, follow: false },
 };
 
 export default async function ProgressPage() {

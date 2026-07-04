@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Field from "@/components/ui/Field";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
+import ShareLinkButton from "@/components/ShareLinkButton";
 import { validateNumber } from "@/lib/validation";
+import { useShareableParams } from "@/lib/useShareableParams";
 
 type Category = "length" | "weight" | "temperature";
 
@@ -65,10 +67,14 @@ function formatNumber(n: number) {
 }
 
 export default function UnitConverter() {
-  const [category, setCategory] = useState<Category>("length");
-  const [value, setValue] = useState("1");
-  const [fromUnit, setFromUnit] = useState("meter");
-  const [toUnit, setToUnit] = useState("foot");
+  const [params, update] = useShareableParams({
+    category: "length",
+    value: "1",
+    fromUnit: "meter",
+    toUnit: "foot",
+  });
+  const category = params.category as Category;
+  const { value, fromUnit, toUnit } = params;
 
   const units = CATEGORY_UNITS[category];
 
@@ -80,10 +86,12 @@ export default function UnitConverter() {
   }, [category, value, fromUnit, toUnit]);
 
   function handleCategoryChange(next: Category) {
-    setCategory(next);
     const defaults = CATEGORY_UNITS[next];
-    setFromUnit(defaults[0]);
-    setToUnit(defaults[1] ?? defaults[0]);
+    update({
+      category: next,
+      fromUnit: defaults[0],
+      toUnit: defaults[1] ?? defaults[0],
+    });
   }
 
   return (
@@ -110,7 +118,7 @@ export default function UnitConverter() {
         <Field
           label="Value"
           value={value}
-          onChange={setValue}
+          onChange={(v) => update({ value: v })}
           error={validateNumber(value)}
         />
         <div className="grid grid-cols-2 gap-3">
@@ -120,7 +128,7 @@ export default function UnitConverter() {
             </span>
             <select
               value={fromUnit}
-              onChange={(e) => setFromUnit(e.target.value)}
+              onChange={(e) => update({ fromUnit: e.target.value })}
               className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-base capitalize text-neutral-900 outline-none focus:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:border-neutral-100"
             >
               {units.map((u) => (
@@ -136,7 +144,7 @@ export default function UnitConverter() {
             </span>
             <select
               value={toUnit}
-              onChange={(e) => setToUnit(e.target.value)}
+              onChange={(e) => update({ toUnit: e.target.value })}
               className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-base capitalize text-neutral-900 outline-none focus:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:border-neutral-100"
             >
               {units.map((u) => (
@@ -152,6 +160,7 @@ export default function UnitConverter() {
       <ResultsPanel>
         <ResultRow label="Result" value={`${formatNumber(result)} ${toUnit}`} emphasize />
       </ResultsPanel>
+      <ShareLinkButton params={params} />
     </div>
   );
 }

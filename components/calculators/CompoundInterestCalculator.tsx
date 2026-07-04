@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Field from "@/components/ui/Field";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
+import ShareLinkButton from "@/components/ShareLinkButton";
 import { validateNumber } from "@/lib/validation";
+import { useShareableParams } from "@/lib/useShareableParams";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -19,16 +21,19 @@ const FREQUENCIES = [
 ];
 
 export default function CompoundInterestCalculator() {
-  const [principal, setPrincipal] = useState("10000");
-  const [rate, setRate] = useState("6");
-  const [years, setYears] = useState("10");
-  const [frequency, setFrequency] = useState(12);
+  const [params, update] = useShareableParams({
+    principal: "10000",
+    rate: "6",
+    years: "10",
+    frequency: "12",
+  });
+  const { principal, rate, years, frequency } = params;
 
   const { futureValue, totalInterest } = useMemo(() => {
     const p = Number(principal) || 0;
     const r = (Number(rate) || 0) / 100;
     const t = Number(years) || 0;
-    const n = frequency;
+    const n = Number(frequency) || 1;
 
     const fv = p * Math.pow(1 + r / n, n * t);
     return { futureValue: fv, totalInterest: fv - p };
@@ -44,7 +49,7 @@ export default function CompoundInterestCalculator() {
         <Field
           label="Principal"
           value={principal}
-          onChange={setPrincipal}
+          onChange={(v) => update({ principal: v })}
           unit="$"
           min={0}
           error={principalError}
@@ -52,7 +57,7 @@ export default function CompoundInterestCalculator() {
         <Field
           label="Annual interest rate"
           value={rate}
-          onChange={setRate}
+          onChange={(v) => update({ rate: v })}
           unit="%"
           step={0.01}
           min={0}
@@ -61,7 +66,7 @@ export default function CompoundInterestCalculator() {
         <Field
           label="Time"
           value={years}
-          onChange={setYears}
+          onChange={(v) => update({ years: v })}
           unit="years"
           min={0}
           error={yearsError}
@@ -72,7 +77,7 @@ export default function CompoundInterestCalculator() {
           </span>
           <select
             value={frequency}
-            onChange={(e) => setFrequency(Number(e.target.value))}
+            onChange={(e) => update({ frequency: e.target.value })}
             className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-base text-neutral-900 outline-none focus:border-neutral-900 focus-visible:ring-2 focus-visible:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:border-neutral-100 dark:focus-visible:ring-neutral-100"
           >
             {FREQUENCIES.map((f) => (
@@ -91,6 +96,7 @@ export default function CompoundInterestCalculator() {
         />
         <ResultRow label="Interest earned" value={currency.format(totalInterest)} />
       </ResultsPanel>
+      <ShareLinkButton params={params} />
     </div>
   );
 }

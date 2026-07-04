@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Field from "@/components/ui/Field";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
+import ShareLinkButton from "@/components/ShareLinkButton";
 import { validateNumber } from "@/lib/validation";
+import { useShareableParams } from "@/lib/useShareableParams";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -12,9 +14,12 @@ const currency = new Intl.NumberFormat("en-US", {
 });
 
 export default function EmiCalculator() {
-  const [principal, setPrincipal] = useState("250000");
-  const [rate, setRate] = useState("7.5");
-  const [years, setYears] = useState("20");
+  const [params, update] = useShareableParams({
+    principal: "250000",
+    rate: "7.5",
+    years: "20",
+  });
+  const { principal, rate, years } = params;
 
   const { emi, totalPayment, totalInterest } = useMemo(() => {
     const p = Number(principal) || 0;
@@ -52,7 +57,7 @@ export default function EmiCalculator() {
         <Field
           label="Loan amount"
           value={principal}
-          onChange={setPrincipal}
+          onChange={(v) => update({ principal: v })}
           unit="$"
           min={0}
           error={principalError}
@@ -60,7 +65,7 @@ export default function EmiCalculator() {
         <Field
           label="Annual interest rate"
           value={rate}
-          onChange={setRate}
+          onChange={(v) => update({ rate: v })}
           unit="%"
           step={0.01}
           min={0}
@@ -69,7 +74,7 @@ export default function EmiCalculator() {
         <Field
           label="Loan tenure"
           value={years}
-          onChange={setYears}
+          onChange={(v) => update({ years: v })}
           unit="years"
           min={0}
           error={yearsError}
@@ -80,6 +85,7 @@ export default function EmiCalculator() {
         <ResultRow label="Total payment" value={currency.format(totalPayment)} />
         <ResultRow label="Total interest" value={currency.format(totalInterest)} />
       </ResultsPanel>
+      <ShareLinkButton params={params} />
     </div>
   );
 }

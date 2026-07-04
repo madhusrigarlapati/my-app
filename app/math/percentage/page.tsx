@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 import CalculatorShell from "@/components/CalculatorShell";
 import PercentageCalculator from "@/components/calculators/PercentageCalculator";
 import { findCalculator } from "@/lib/calculators";
 
 const { domain, calculator } = findCalculator("math", "percentage");
 
-export const metadata: Metadata = {
-  title: calculator?.name,
-  description: calculator?.description,
-};
+export const metadata = buildMetadata({
+  title: calculator!.name,
+  description: calculator!.description,
+  path: "/math/percentage",
+});
 
 export default function PercentagePage() {
   return (

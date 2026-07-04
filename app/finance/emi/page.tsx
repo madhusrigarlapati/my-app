@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 import CalculatorShell from "@/components/CalculatorShell";
 import EmiCalculator from "@/components/calculators/EmiCalculator";
 import { findCalculator } from "@/lib/calculators";
 
 const { domain, calculator } = findCalculator("finance", "emi");
 
-export const metadata: Metadata = {
-  title: calculator?.name,
-  description: calculator?.description,
-};
+export const metadata = buildMetadata({
+  title: calculator!.name,
+  description: calculator!.description,
+  path: "/finance/emi",
+});
 
 export default function EmiPage() {
   return (

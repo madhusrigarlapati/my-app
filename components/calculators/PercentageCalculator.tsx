@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Field from "@/components/ui/Field";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
+import ShareLinkButton from "@/components/ShareLinkButton";
 import { validateNumber } from "@/lib/validation";
+import { useShareableParams } from "@/lib/useShareableParams";
 
 function formatNumber(n: number) {
   if (!Number.isFinite(n)) return "—";
@@ -11,14 +13,15 @@ function formatNumber(n: number) {
 }
 
 export default function PercentageCalculator() {
-  const [percent, setPercent] = useState("15");
-  const [ofValue, setOfValue] = useState("200");
-
-  const [partValue, setPartValue] = useState("30");
-  const [wholeValue, setWholeValue] = useState("200");
-
-  const [fromValue, setFromValue] = useState("200");
-  const [toValue, setToValue] = useState("250");
+  const [params, update] = useShareableParams({
+    percent: "15",
+    ofValue: "200",
+    partValue: "30",
+    wholeValue: "200",
+    fromValue: "200",
+    toValue: "250",
+  });
+  const { percent, ofValue, partValue, wholeValue, fromValue, toValue } = params;
 
   const percentOf = useMemo(
     () => ((Number(percent) || 0) / 100) * (Number(ofValue) || 0),
@@ -47,14 +50,14 @@ export default function PercentageCalculator() {
           <Field
             label="Percent"
             value={percent}
-            onChange={setPercent}
+            onChange={(v) => update({ percent: v })}
             unit="%"
             error={validateNumber(percent)}
           />
           <Field
             label="Of value"
             value={ofValue}
-            onChange={setOfValue}
+            onChange={(v) => update({ ofValue: v })}
             error={validateNumber(ofValue)}
           />
         </div>
@@ -71,13 +74,13 @@ export default function PercentageCalculator() {
           <Field
             label="Part"
             value={partValue}
-            onChange={setPartValue}
+            onChange={(v) => update({ partValue: v })}
             error={validateNumber(partValue)}
           />
           <Field
             label="Whole"
             value={wholeValue}
-            onChange={setWholeValue}
+            onChange={(v) => update({ wholeValue: v })}
             error={validateNumber(wholeValue)}
           />
         </div>
@@ -98,13 +101,13 @@ export default function PercentageCalculator() {
           <Field
             label="From"
             value={fromValue}
-            onChange={setFromValue}
+            onChange={(v) => update({ fromValue: v })}
             error={validateNumber(fromValue)}
           />
           <Field
             label="To"
             value={toValue}
-            onChange={setToValue}
+            onChange={(v) => update({ toValue: v })}
             error={validateNumber(toValue)}
           />
         </div>
@@ -116,6 +119,7 @@ export default function PercentageCalculator() {
           />
         </ResultsPanel>
       </section>
+      <ShareLinkButton params={params} />
     </div>
   );
 }

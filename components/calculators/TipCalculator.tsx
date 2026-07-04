@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Field from "@/components/ui/Field";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
+import ShareLinkButton from "@/components/ShareLinkButton";
 import { validateNumber } from "@/lib/validation";
+import { useShareableParams } from "@/lib/useShareableParams";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -12,9 +14,12 @@ const currency = new Intl.NumberFormat("en-US", {
 });
 
 export default function TipCalculator() {
-  const [bill, setBill] = useState("50");
-  const [tipPercent, setTipPercent] = useState("18");
-  const [people, setPeople] = useState("2");
+  const [params, update] = useShareableParams({
+    bill: "50",
+    tipPercent: "18",
+    people: "2",
+  });
+  const { bill, tipPercent, people } = params;
 
   const { tipAmount, total, perPerson } = useMemo(() => {
     const billValue = Number(bill) || 0;
@@ -34,7 +39,7 @@ export default function TipCalculator() {
         <Field
           label="Bill amount"
           value={bill}
-          onChange={setBill}
+          onChange={(v) => update({ bill: v })}
           unit="$"
           min={0}
           error={validateNumber(bill, { min: 0 })}
@@ -42,7 +47,7 @@ export default function TipCalculator() {
         <Field
           label="Tip percentage"
           value={tipPercent}
-          onChange={setTipPercent}
+          onChange={(v) => update({ tipPercent: v })}
           unit="%"
           min={0}
           error={validateNumber(tipPercent, { min: 0 })}
@@ -50,7 +55,7 @@ export default function TipCalculator() {
         <Field
           label="Number of people"
           value={people}
-          onChange={setPeople}
+          onChange={(v) => update({ people: v })}
           min={1}
           error={validateNumber(people, { min: 1 })}
         />
@@ -60,6 +65,7 @@ export default function TipCalculator() {
         <ResultRow label="Total bill" value={currency.format(total)} />
         <ResultRow label="Per person" value={currency.format(perPerson)} emphasize />
       </ResultsPanel>
+      <ShareLinkButton params={params} />
     </div>
   );
 }

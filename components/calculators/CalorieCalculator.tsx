@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Field from "@/components/ui/Field";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
+import ShareLinkButton from "@/components/ShareLinkButton";
 import { validateNumber } from "@/lib/validation";
+import { useShareableParams } from "@/lib/useShareableParams";
 
 type Gender = "male" | "female";
 
@@ -16,20 +18,25 @@ const ACTIVITY_LEVELS = [
 ];
 
 export default function CalorieCalculator() {
-  const [gender, setGender] = useState<Gender>("male");
-  const [age, setAge] = useState("30");
-  const [heightCm, setHeightCm] = useState("175");
-  const [weightKg, setWeightKg] = useState("75");
-  const [activityFactor, setActivityFactor] = useState(1.55);
+  const [params, update] = useShareableParams({
+    gender: "male",
+    age: "30",
+    heightCm: "175",
+    weightKg: "75",
+    activityFactor: "1.55",
+  });
+  const gender = params.gender as Gender;
+  const { age, heightCm, weightKg, activityFactor } = params;
 
   const { bmr, tdee } = useMemo(() => {
     const a = Number(age) || 0;
     const h = Number(heightCm) || 0;
     const w = Number(weightKg) || 0;
+    const factor = Number(activityFactor) || 1;
 
     const base = 10 * w + 6.25 * h - 5 * a;
     const bmrValue = gender === "male" ? base + 5 : base - 161;
-    return { bmr: bmrValue, tdee: bmrValue * activityFactor };
+    return { bmr: bmrValue, tdee: bmrValue * factor };
   }, [gender, age, heightCm, weightKg, activityFactor]);
 
   return (
@@ -39,7 +46,7 @@ export default function CalorieCalculator() {
           <button
             key={option}
             type="button"
-            onClick={() => setGender(option)}
+            onClick={() => update({ gender: option })}
             aria-pressed={gender === option}
             className={`rounded-full px-3 py-1.5 text-sm font-medium capitalize transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 dark:focus-visible:ring-neutral-100 ${
               gender === option
@@ -56,7 +63,7 @@ export default function CalorieCalculator() {
         <Field
           label="Age"
           value={age}
-          onChange={setAge}
+          onChange={(v) => update({ age: v })}
           unit="years"
           min={0}
           error={validateNumber(age, { min: 0 })}
@@ -64,7 +71,7 @@ export default function CalorieCalculator() {
         <Field
           label="Height"
           value={heightCm}
-          onChange={setHeightCm}
+          onChange={(v) => update({ heightCm: v })}
           unit="cm"
           min={0}
           error={validateNumber(heightCm, { min: 0 })}
@@ -72,7 +79,7 @@ export default function CalorieCalculator() {
         <Field
           label="Weight"
           value={weightKg}
-          onChange={setWeightKg}
+          onChange={(v) => update({ weightKg: v })}
           unit="kg"
           min={0}
           error={validateNumber(weightKg, { min: 0 })}
@@ -83,7 +90,7 @@ export default function CalorieCalculator() {
           </span>
           <select
             value={activityFactor}
-            onChange={(e) => setActivityFactor(Number(e.target.value))}
+            onChange={(e) => update({ activityFactor: e.target.value })}
             className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-base text-neutral-900 outline-none focus:border-neutral-900 focus-visible:ring-2 focus-visible:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:border-neutral-100 dark:focus-visible:ring-neutral-100"
           >
             {ACTIVITY_LEVELS.map((level) => (
@@ -103,6 +110,7 @@ export default function CalorieCalculator() {
           emphasize
         />
       </ResultsPanel>
+      <ShareLinkButton params={params} />
     </div>
   );
 }

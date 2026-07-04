@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Nav from "@/components/Nav";
+import { siteUrl } from "@/lib/seo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,12 +15,27 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: "Calc Suite — Calculators for every domain",
     template: "%s · Calc Suite",
   },
   description:
     "Finance, health, math, and everyday calculators in one place.",
+  openGraph: {
+    title: "Calc Suite — Calculators for every domain",
+    description:
+      "Finance, health, math, and everyday calculators in one place.",
+    url: "/",
+    siteName: "Calc Suite",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Calc Suite — Calculators for every domain",
+    description:
+      "Finance, health, math, and everyday calculators in one place.",
+  },
 };
 
 export default function RootLayout({

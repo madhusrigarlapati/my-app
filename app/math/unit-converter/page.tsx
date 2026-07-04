@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 import CalculatorShell from "@/components/CalculatorShell";
 import UnitConverter from "@/components/calculators/UnitConverter";
 import { findCalculator } from "@/lib/calculators";
 
 const { domain, calculator } = findCalculator("math", "unit-converter");
 
-export const metadata: Metadata = {
-  title: calculator?.name,
-  description: calculator?.description,
-};
+export const metadata = buildMetadata({
+  title: calculator!.name,
+  description: calculator!.description,
+  path: "/math/unit-converter",
+});
 
 export default function UnitConverterPage() {
   return (
