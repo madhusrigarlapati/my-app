@@ -10,9 +10,12 @@ export default function Nav() {
         >
           Calc Suite
         </Link>
-        <span className="text-sm text-neutral-500 dark:text-neutral-400">
-          Calculators for every domain
-        </span>
+        <Link
+          href="/progress"
+          className="text-sm text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+        >
+          Build progress
+        </Link>
       </div>
     </header>
   );
