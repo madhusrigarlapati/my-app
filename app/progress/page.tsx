@@ -24,14 +24,12 @@ export default async function ProgressPage() {
           --status-warning: #fab219;
           --status-todo: #c3c2b7;
         }
-        @media (prefers-color-scheme: dark) {
-          .progress-viz {
-            --track: #2c2c2a;
-            --gauge-fill: #3987e5;
-            --status-good: #0ca30c;
-            --status-warning: #fab219;
-            --status-todo: #383835;
-          }
+        .dark .progress-viz {
+          --track: #2c2c2a;
+          --gauge-fill: #3987e5;
+          --status-good: #0ca30c;
+          --status-warning: #fab219;
+          --status-todo: #383835;
         }
       `}</style>
 
