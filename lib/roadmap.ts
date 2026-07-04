@@ -1,4 +1,4 @@
-import { sql } from "@/lib/db";
+import { getSql } from "@/lib/db";
 
 export type Status = "todo" | "in_progress" | "done";
 
@@ -29,6 +29,8 @@ function normalizeStatus(status: string): Status {
 }
 
 export async function getRoadmapProgress(): Promise<RoadmapProgress> {
+  const sql = getSql();
+
   const phaseRows = (await sql`
     SELECT code, title, sort_order
     FROM version1
