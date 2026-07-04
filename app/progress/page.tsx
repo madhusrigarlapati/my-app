@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Gauge from "@/components/progress/Gauge";
 import PhaseBar from "@/components/progress/PhaseBar";
+import TaskTree from "@/components/progress/TaskTree";
 import { getRoadmapProgress } from "@/lib/roadmap";
 
 export const dynamic = "force-dynamic";
@@ -99,7 +100,25 @@ export default async function ProgressPage() {
           </div>
         </div>
         {phases.map((phase) => (
-          <PhaseBar key={phase.code} phase={phase} />
+          <details
+            key={phase.code}
+            open={phase.done > 0 && phase.done < phase.total}
+            className="group rounded-xl border border-neutral-200 dark:border-neutral-800"
+          >
+            <summary className="cursor-pointer list-none px-4 py-3 marker:content-none">
+              <div className="flex items-center gap-3">
+                <div className="flex-1">
+                  <PhaseBar phase={phase} />
+                </div>
+                <span className="shrink-0 text-neutral-400 transition-transform group-open:rotate-180">
+                  &darr;
+                </span>
+              </div>
+            </summary>
+            <div className="border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
+              <TaskTree tasks={phase.tasks} />
+            </div>
+          </details>
         ))}
       </div>
 
