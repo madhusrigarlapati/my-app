@@ -2,11 +2,13 @@
 
 import { useMemo } from "react";
 import Field from "@/components/ui/Field";
+import UnitSystemToggle, { type UnitSystem } from "@/components/ui/UnitSystemToggle";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
 import ShareLinkButton from "@/components/ShareLinkButton";
 import { validateNumber } from "@/lib/validation";
 import { useShareableParams } from "@/lib/useShareableParams";
 import { calculateBmrTdee } from "@/lib/calculations/health";
+import { convertLength, convertWeight } from "@/lib/calculations/math";
 
 type Gender = "male" | "female";
 
@@ -21,25 +23,36 @@ const ACTIVITY_LEVELS = [
 export default function CalorieCalculator() {
   const [params, update] = useShareableParams("calorie", {
     gender: "male",
+    unit: "metric",
     age: "30",
     heightCm: "175",
     weightKg: "75",
+    heightIn: "69",
+    weightLb: "165",
     activityFactor: "1.55",
   });
   const gender = params.gender as Gender;
-  const { age, heightCm, weightKg, activityFactor } = params;
+  const unit = params.unit as UnitSystem;
+  const { age, heightCm, weightKg, heightIn, weightLb, activityFactor } = params;
 
-  const { bmr, tdee } = useMemo(
-    () =>
-      calculateBmrTdee({
-        gender,
-        age: Number(age) || 0,
-        heightCm: Number(heightCm) || 0,
-        weightKg: Number(weightKg) || 0,
-        activityFactor: Number(activityFactor) || 1,
-      }),
-    [gender, age, heightCm, weightKg, activityFactor]
-  );
+  const { bmr, tdee } = useMemo(() => {
+    const heightCmValue =
+      unit === "metric"
+        ? Number(heightCm) || 0
+        : convertLength(Number(heightIn) || 0, "inch", "centimeter");
+    const weightKgValue =
+      unit === "metric"
+        ? Number(weightKg) || 0
+        : convertWeight(Number(weightLb) || 0, "pound", "kilogram");
+
+    return calculateBmrTdee({
+      gender,
+      age: Number(age) || 0,
+      heightCm: heightCmValue,
+      weightKg: weightKgValue,
+      activityFactor: Number(activityFactor) || 1,
+    });
+  }, [gender, unit, age, heightCm, weightKg, heightIn, weightLb, activityFactor]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -61,6 +74,8 @@ export default function CalorieCalculator() {
         ))}
       </div>
 
+      <UnitSystemToggle value={unit} onChange={(v) => update({ unit: v })} />
+
       <div className="flex flex-col gap-4">
         <Field
           label="Age"
@@ -70,22 +85,45 @@ export default function CalorieCalculator() {
           min={0}
           error={validateNumber(age, { min: 0 })}
         />
-        <Field
-          label="Height"
-          value={heightCm}
-          onChange={(v) => update({ heightCm: v })}
-          unit="cm"
-          min={0}
-          error={validateNumber(heightCm, { min: 0 })}
-        />
-        <Field
-          label="Weight"
-          value={weightKg}
-          onChange={(v) => update({ weightKg: v })}
-          unit="kg"
-          min={0}
-          error={validateNumber(weightKg, { min: 0 })}
-        />
+        {unit === "metric" ? (
+          <>
+            <Field
+              label="Height"
+              value={heightCm}
+              onChange={(v) => update({ heightCm: v })}
+              unit="cm"
+              min={0}
+              error={validateNumber(heightCm, { min: 0 })}
+            />
+            <Field
+              label="Weight"
+              value={weightKg}
+              onChange={(v) => update({ weightKg: v })}
+              unit="kg"
+              min={0}
+              error={validateNumber(weightKg, { min: 0 })}
+            />
+          </>
+        ) : (
+          <>
+            <Field
+              label="Height"
+              value={heightIn}
+              onChange={(v) => update({ heightIn: v })}
+              unit="in"
+              min={0}
+              error={validateNumber(heightIn, { min: 0 })}
+            />
+            <Field
+              label="Weight"
+              value={weightLb}
+              onChange={(v) => update({ weightLb: v })}
+              unit="lb"
+              min={0}
+              error={validateNumber(weightLb, { min: 0 })}
+            />
+          </>
+        )}
         <label className="flex flex-col gap-1.5 text-sm">
           <span className="font-medium text-neutral-700 dark:text-neutral-300">
             Activity level
