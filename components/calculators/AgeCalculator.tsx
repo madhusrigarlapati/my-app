@@ -4,26 +4,10 @@ import { useMemo } from "react";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
 import ShareLinkButton from "@/components/ShareLinkButton";
 import { useShareableParams } from "@/lib/useShareableParams";
+import { calculateDateDiff } from "@/lib/calculations/everyday";
 
 function todayIso() {
   return new Date().toISOString().slice(0, 10);
-}
-
-function diffYmd(start: Date, end: Date) {
-  let years = end.getFullYear() - start.getFullYear();
-  let months = end.getMonth() - start.getMonth();
-  let days = end.getDate() - start.getDate();
-
-  if (days < 0) {
-    months -= 1;
-    const prevMonth = new Date(end.getFullYear(), end.getMonth(), 0);
-    days += prevMonth.getDate();
-  }
-  if (months < 0) {
-    years -= 1;
-    months += 12;
-  }
-  return { years, months, days };
 }
 
 export default function AgeCalculator() {
@@ -33,21 +17,10 @@ export default function AgeCalculator() {
   });
   const { startDate, endDate } = params;
 
-  const result = useMemo(() => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
-      return null;
-    }
-
-    const [from, to] = start <= end ? [start, end] : [end, start];
-    const { years, months, days } = diffYmd(from, to);
-    const totalDays = Math.round(
-      (to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24)
-    );
-
-    return { years, months, days, totalDays };
-  }, [startDate, endDate]);
+  const result = useMemo(
+    () => calculateDateDiff(startDate, endDate),
+    [startDate, endDate]
+  );
 
   return (
     <div className="flex flex-col gap-6">

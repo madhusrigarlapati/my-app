@@ -6,6 +6,7 @@ import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
 import ShareLinkButton from "@/components/ShareLinkButton";
 import { validateNumber } from "@/lib/validation";
 import { useShareableParams } from "@/lib/useShareableParams";
+import { calculateEmi } from "@/lib/calculations/finance";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -21,31 +22,10 @@ export default function EmiCalculator() {
   });
   const { principal, rate, years } = params;
 
-  const { emi, totalPayment, totalInterest } = useMemo(() => {
-    const p = Number(principal) || 0;
-    const annualRate = Number(rate) || 0;
-    const months = (Number(years) || 0) * 12;
-    const monthlyRate = annualRate / 12 / 100;
-
-    if (p <= 0 || months <= 0) {
-      return { emi: 0, totalPayment: 0, totalInterest: 0 };
-    }
-
-    let monthlyEmi: number;
-    if (monthlyRate === 0) {
-      monthlyEmi = p / months;
-    } else {
-      const factor = Math.pow(1 + monthlyRate, months);
-      monthlyEmi = (p * monthlyRate * factor) / (factor - 1);
-    }
-
-    const total = monthlyEmi * months;
-    return {
-      emi: monthlyEmi,
-      totalPayment: total,
-      totalInterest: total - p,
-    };
-  }, [principal, rate, years]);
+  const { emi, totalPayment, totalInterest } = useMemo(
+    () => calculateEmi(Number(principal) || 0, Number(rate) || 0, Number(years) || 0),
+    [principal, rate, years]
+  );
 
   const principalError = validateNumber(principal, { min: 0 });
   const rateError = validateNumber(rate, { min: 0 });

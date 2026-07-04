@@ -6,16 +6,9 @@ import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
 import ShareLinkButton from "@/components/ShareLinkButton";
 import { validateNumber } from "@/lib/validation";
 import { useShareableParams } from "@/lib/useShareableParams";
+import { calculateBmiMetric, calculateBmiImperial, bmiCategory } from "@/lib/calculations/health";
 
 type UnitSystem = "metric" | "imperial";
-
-function bmiCategory(bmi: number) {
-  if (bmi <= 0) return "—";
-  if (bmi < 18.5) return "Underweight";
-  if (bmi < 25) return "Normal";
-  if (bmi < 30) return "Overweight";
-  return "Obese";
-}
 
 export default function BmiCalculator() {
   const [params, update] = useShareableParams("bmi", {
@@ -30,15 +23,9 @@ export default function BmiCalculator() {
 
   const bmi = useMemo(() => {
     if (unit === "metric") {
-      const h = (Number(heightCm) || 0) / 100;
-      const w = Number(weightKg) || 0;
-      if (h <= 0) return 0;
-      return w / (h * h);
+      return calculateBmiMetric(Number(heightCm) || 0, Number(weightKg) || 0);
     }
-    const h = Number(heightIn) || 0;
-    const w = Number(weightLb) || 0;
-    if (h <= 0) return 0;
-    return (703 * w) / (h * h);
+    return calculateBmiImperial(Number(heightIn) || 0, Number(weightLb) || 0);
   }, [unit, heightCm, weightKg, heightIn, weightLb]);
 
   return (

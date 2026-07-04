@@ -6,6 +6,7 @@ import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
 import ShareLinkButton from "@/components/ShareLinkButton";
 import { validateNumber } from "@/lib/validation";
 import { useShareableParams } from "@/lib/useShareableParams";
+import { calculateCompoundInterest } from "@/lib/calculations/finance";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -29,15 +30,16 @@ export default function CompoundInterestCalculator() {
   });
   const { principal, rate, years, frequency } = params;
 
-  const { futureValue, totalInterest } = useMemo(() => {
-    const p = Number(principal) || 0;
-    const r = (Number(rate) || 0) / 100;
-    const t = Number(years) || 0;
-    const n = Number(frequency) || 1;
-
-    const fv = p * Math.pow(1 + r / n, n * t);
-    return { futureValue: fv, totalInterest: fv - p };
-  }, [principal, rate, years, frequency]);
+  const { futureValue, totalInterest } = useMemo(
+    () =>
+      calculateCompoundInterest(
+        Number(principal) || 0,
+        Number(rate) || 0,
+        Number(years) || 0,
+        Number(frequency) || 1
+      ),
+    [principal, rate, years, frequency]
+  );
 
   const principalError = validateNumber(principal, { min: 0 });
   const rateError = validateNumber(rate, { min: 0 });

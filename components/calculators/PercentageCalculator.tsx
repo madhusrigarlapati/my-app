@@ -6,6 +6,11 @@ import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
 import ShareLinkButton from "@/components/ShareLinkButton";
 import { validateNumber } from "@/lib/validation";
 import { useShareableParams } from "@/lib/useShareableParams";
+import {
+  percentOf as calcPercentOf,
+  whatPercent,
+  percentageChange,
+} from "@/lib/calculations/math";
 
 function formatNumber(n: number) {
   if (!Number.isFinite(n)) return "—";
@@ -24,21 +29,19 @@ export default function PercentageCalculator() {
   const { percent, ofValue, partValue, wholeValue, fromValue, toValue } = params;
 
   const percentOf = useMemo(
-    () => ((Number(percent) || 0) / 100) * (Number(ofValue) || 0),
+    () => calcPercentOf(Number(percent) || 0, Number(ofValue) || 0),
     [percent, ofValue]
   );
 
-  const partOfWhole = useMemo(() => {
-    const whole = Number(wholeValue) || 0;
-    if (whole === 0) return 0;
-    return ((Number(partValue) || 0) / whole) * 100;
-  }, [partValue, wholeValue]);
+  const partOfWhole = useMemo(
+    () => whatPercent(Number(partValue) || 0, Number(wholeValue) || 0),
+    [partValue, wholeValue]
+  );
 
-  const percentChange = useMemo(() => {
-    const from = Number(fromValue) || 0;
-    if (from === 0) return 0;
-    return ((Number(toValue) - from) / Math.abs(from)) * 100;
-  }, [fromValue, toValue]);
+  const percentChange = useMemo(
+    () => percentageChange(Number(fromValue) || 0, Number(toValue) || 0),
+    [fromValue, toValue]
+  );
 
   return (
     <div className="flex flex-col gap-8">

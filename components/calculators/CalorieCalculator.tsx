@@ -6,6 +6,7 @@ import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
 import ShareLinkButton from "@/components/ShareLinkButton";
 import { validateNumber } from "@/lib/validation";
 import { useShareableParams } from "@/lib/useShareableParams";
+import { calculateBmrTdee } from "@/lib/calculations/health";
 
 type Gender = "male" | "female";
 
@@ -28,16 +29,17 @@ export default function CalorieCalculator() {
   const gender = params.gender as Gender;
   const { age, heightCm, weightKg, activityFactor } = params;
 
-  const { bmr, tdee } = useMemo(() => {
-    const a = Number(age) || 0;
-    const h = Number(heightCm) || 0;
-    const w = Number(weightKg) || 0;
-    const factor = Number(activityFactor) || 1;
-
-    const base = 10 * w + 6.25 * h - 5 * a;
-    const bmrValue = gender === "male" ? base + 5 : base - 161;
-    return { bmr: bmrValue, tdee: bmrValue * factor };
-  }, [gender, age, heightCm, weightKg, activityFactor]);
+  const { bmr, tdee } = useMemo(
+    () =>
+      calculateBmrTdee({
+        gender,
+        age: Number(age) || 0,
+        heightCm: Number(heightCm) || 0,
+        weightKg: Number(weightKg) || 0,
+        activityFactor: Number(activityFactor) || 1,
+      }),
+    [gender, age, heightCm, weightKg, activityFactor]
+  );
 
   return (
     <div className="flex flex-col gap-6">

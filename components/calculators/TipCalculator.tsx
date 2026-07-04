@@ -6,6 +6,7 @@ import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
 import ShareLinkButton from "@/components/ShareLinkButton";
 import { validateNumber } from "@/lib/validation";
 import { useShareableParams } from "@/lib/useShareableParams";
+import { calculateTip } from "@/lib/calculations/everyday";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -21,17 +22,10 @@ export default function TipCalculator() {
   });
   const { bill, tipPercent, people } = params;
 
-  const { tipAmount, total, perPerson } = useMemo(() => {
-    const billValue = Number(bill) || 0;
-    const tip = billValue * ((Number(tipPercent) || 0) / 100);
-    const totalValue = billValue + tip;
-    const peopleCount = Math.max(1, Number(people) || 1);
-    return {
-      tipAmount: tip,
-      total: totalValue,
-      perPerson: totalValue / peopleCount,
-    };
-  }, [bill, tipPercent, people]);
+  const { tipAmount, total, perPerson } = useMemo(
+    () => calculateTip(Number(bill) || 0, Number(tipPercent) || 0, Number(people) || 0),
+    [bill, tipPercent, people]
+  );
 
   return (
     <div className="flex flex-col gap-6">
