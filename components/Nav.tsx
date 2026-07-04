@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
+import CommandPalette from "@/components/CommandPalette";
 
 export default function Nav() {
   return (
@@ -12,6 +13,7 @@ export default function Nav() {
           Calc Suite
         </Link>
         <div className="flex items-center gap-4">
+          <CommandPalette />
           <Link
             href="/progress"
             className="text-sm text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
