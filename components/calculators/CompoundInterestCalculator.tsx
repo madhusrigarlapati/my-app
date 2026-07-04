@@ -2,17 +2,13 @@
 
 import { useMemo } from "react";
 import Field from "@/components/ui/Field";
+import CurrencySelector from "@/components/ui/CurrencySelector";
 import { ResultRow, ResultsPanel } from "@/components/ui/ResultRow";
 import ShareLinkButton from "@/components/ShareLinkButton";
 import { validateNumber } from "@/lib/validation";
 import { useShareableParams } from "@/lib/useShareableParams";
 import { calculateCompoundInterest } from "@/lib/calculations/finance";
-
-const currency = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 2,
-});
+import { formatCurrency } from "@/lib/currency";
 
 const FREQUENCIES = [
   { label: "Annually", value: 1 },
@@ -27,8 +23,9 @@ export default function CompoundInterestCalculator() {
     rate: "6",
     years: "10",
     frequency: "12",
+    currency: "USD",
   });
-  const { principal, rate, years, frequency } = params;
+  const { principal, rate, years, frequency, currency } = params;
 
   const { futureValue, totalInterest } = useMemo(
     () =>
@@ -48,11 +45,12 @@ export default function CompoundInterestCalculator() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4">
+        <CurrencySelector value={currency} onChange={(v) => update({ currency: v })} />
         <Field
           label="Principal"
           value={principal}
           onChange={(v) => update({ principal: v })}
-          unit="$"
+          unit={currency}
           min={0}
           error={principalError}
         />
@@ -93,10 +91,13 @@ export default function CompoundInterestCalculator() {
       <ResultsPanel>
         <ResultRow
           label="Future value"
-          value={currency.format(futureValue)}
+          value={formatCurrency(futureValue, currency)}
           emphasize
         />
-        <ResultRow label="Interest earned" value={currency.format(totalInterest)} />
+        <ResultRow
+          label="Interest earned"
+          value={formatCurrency(totalInterest, currency)}
+        />
       </ResultsPanel>
       <ShareLinkButton params={params} />
     </div>
